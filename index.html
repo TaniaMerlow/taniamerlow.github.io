@@ -1,1 +1,172 @@
-hola
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Descarga gratis un relato</title>
+  <meta name="description" content="Descarga gratuita en PDF o EPUB. Relato erótico original." />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root{
+      --bg:#0f1115;         /* fondo sobrio */
+      --card:#141820;       /* tarjeta */
+      --text:#e6e8ee;       /* texto principal */
+      --muted:#a5adbd;      /* texto secundario */
+      --accent:#4c8bf5;     /* acento elegante */
+      --accent-ink:#0b1220; /* contraste en hover */
+      --ring: rgba(76,139,245,.45);
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f6f7fb;
+        --card:#ffffff;
+        --text:#0f1115;
+        --muted:#4b5565;
+        --accent:#2457e6;
+        --accent-ink:#ffffff;
+        --ring: rgba(36,87,230,.3);
+      }
+      body{background-image: radial-gradient(30rem 30rem at 10% -10%, #dfe7ff44, transparent), radial-gradient(30rem 30rem at 110% 110%, #e8f0ff55, transparent);}  
+    }
+
+    
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif; color:var(--text); background:var(--bg);
+    }
+    .wrap{min-height:100dvh; display:grid; place-items:center; padding:clamp(16px, 2.5vw, 32px)}
+
+    .card{
+      width:min(1024px, 96vw);
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      background:var(--card);
+      border-radius: 18px;
+      overflow:hidden;
+      box-shadow: 0 8px 24px rgba(5,10,20,.25), 0 2px 8px rgba(5,10,20,.25);
+      outline: 1px solid color-mix(in oklab, var(--card), #ffffff 6%);
+    }
+    @media (max-width: 840px){
+      .card{grid-template-columns: 1fr}
+      .cover{height: clamp(260px, 45vh, 420px)}
+    }
+
+    .cover{
+      position:relative;
+      background: linear-gradient(135deg, #1a1f2b, #10131a);
+      display:grid; place-items:center;
+      padding: 24px;
+    }
+    .cover img{
+      width:100%; height:100%; object-fit:cover; object-position:center; border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(0,0,0,.35);
+      aspect-ratio: 3/4; /* mantiene proporción de portada */
+      background: #0b0e14; /* color de fondo si no carga */
+    }
+    .cover .hint{
+      position:absolute; inset:auto 12px 12px auto; background:#00000066; color:#fff; border-radius:999px; padding:.35rem .75rem; font-size:.75rem; letter-spacing:.02em; backdrop-filter: blur(6px);
+    }
+
+    .content{padding: clamp(20px, 6vw, 48px); display:flex; flex-direction:column; justify-content:center; gap: 20px}
+    h1{margin:0 0 4px 0; font-size: clamp(20px, 3vw, 28px); font-weight:700; letter-spacing:.2px}
+    h2{margin:0; font-size: clamp(28px, 4vw, 40px); line-height:1.1}
+    p{margin:0; color:var(--muted)}
+
+    .actions{display:flex; flex-wrap:wrap; gap:12px; margin-top: 8px}
+    .btn{
+      --pad-x: 18px; --pad-y: 12px; --radius: 12px;
+      display:inline-flex; align-items:center; gap:.6rem; padding: var(--pad-y) var(--pad-x);
+      border-radius: var(--radius); border:1px solid color-mix(in oklab, var(--card), #ffffff 14%);
+      background: color-mix(in oklab, var(--card), #ffffff 6%);
+      color: var(--text); text-decoration:none; font-weight:600; letter-spacing:.2px;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease;
+      will-change: transform;
+    }
+    .btn:hover{transform: translateY(-1px)}
+    .btn:focus-visible{outline:none; box-shadow: 0 0 0 6px var(--ring)}
+    .btn.primary{background: var(--accent); color: var(--accent-ink); border-color: transparent}
+    .btn.primary:hover{filter: saturate(110%);}
+
+    .tag{display:inline-flex; align-items:center; gap:.4rem; font-size:.85rem; color:var(--muted)}
+    .dot{width:.5rem; height:.5rem; border-radius:999px; background: var(--accent); box-shadow:0 0 0 3px color-mix(in oklab, var(--accent), transparent 70%)}
+
+    /* Accesibilidad y movimiento reducido */
+    @media (prefers-reduced-motion: reduce){
+      .btn{transition: none}
+    }
+
+    /* --- FIX: móvil: portada arriba, contenido debajo, sin solapes --- */
+@media (max-width: 840px){
+  /* 1) El contenedor pasa a una sola columna */
+  .card{
+    display: grid;
+    grid-template-columns: 1fr;
+    /* si ya usas grid areas, puedes mantenerlo; si no, con esto basta */
+  }
+
+  /* 2) La portada NO tiene altura fija en móvil */
+  .cover{
+    position: relative;   /* asegura z-index controlable */
+    z-index: 0;
+    height: auto !important;   /* sobrescribe cualquier clamp/fijo */
+  }
+  .cover img{
+    display: block;
+    width: 100%;
+    height: auto !important;   /* evita que tape el resto */
+    max-height: none !important;
+    aspect-ratio: auto;        /* si pusiste 3/4 y te da problemas */
+  }
+
+  /* 3) El contenido siempre va debajo y por encima en stacking */
+  .content{
+    position: relative;
+    z-index: 1; /* por si la portada llevaba algún overlay */
+  }
+}
+  </style>
+</head>
+<body>
+  <main class="wrap" role="main">
+    <section class="card" aria-labelledby="titulo">
+      <!-- Lado izquierdo: portada -->
+      <div class="cover">
+        <!-- Sustituye portada.jpg por tu imagen real -->
+        <img src="portada.png" alt="Portada del libro" loading="eager" />
+        <span class="hint" aria-hidden="true">Portada</span>
+      </div>
+
+      <!-- Lado derecho: texto + CTA -->
+      <div class="content">
+        <h1 id="titulo" style="background-color: #4c8bf5; padding: 0.5rem; border-radius: 1rem; text-align: center;">Juan García - Escritor de relatos eróticos 👠 </h1>
+        <h2>Descarga totalmente gratis un relato</h2>
+        <p>Elige el formato que prefieras. No hace falta insertar ningún dato ni nada, descarga 100% gratuita.</p>
+
+        <div class="actions">
+          <!-- Actualiza los href a las rutas reales -->
+          <a class="btn primary" href="relato.pdf" download aria-label="Descargar en PDF">
+            <!-- Ícono PDF (inline SVG, sin dependencias) -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L18.5 9H14zM7.75 14H9.5a2 2 0 1 1 0 4H8.5v1H7.25zm1.25 1.25v1.5h.5a.75.75 0 0 0 0-1.5zm4-2.25H15a2 2 0 1 1 0 4h-.75V19h-1.25zm1.25 1.25v1.5H15a.75.75 0 0 0 0-1.5zm3.75-2.5H20v1.25h-1.5V19h-1.25z"/></svg>
+            Descargar PDF
+          </a>
+          <a class="btn" href="relato.epub" download aria-label="Descargar en EPUB">
+            <!-- Ícono EPUB (libro simple) -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4h9a3 3 0 0 1 3 3v13.25a.75.75 0 0 1-1.18.61L14 19.5l-2.82 1.36a.75.75 0 0 1-1.18-.61V7a3 3 0 0 0-3-3Zm7.5 2.5H8.75A1.75 1.75 0 0 0 7 8.25V19l2-1 2 1V8.25c0-.966.784-1.75 1.75-1.75Z"/></svg>
+            Descargar EPUB
+          </a>
+<br>
+          <h3>Contacto</h3>
+        <p>Si te ha gustado puedes contactar conmigo por los siguientes canales:</p>
+        <div class="socials">
+          <a href="#" style="font-size: 2rem; color:white" aria-label="Twitter"><i class="fa-brands fa-square-x-twitter"></i></a>
+          <a href="#" aria-label="OnlyFans"></a>
+          <a href="mailto:juangar22@proton.me" style="font-size: 2rem; color:white" aria-label="Correo electrónico"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
